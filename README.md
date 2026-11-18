@@ -1,56 +1,113 @@
-# Welcome to your Expo app 👋
+# Bin Buddy
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A simple Android application built with React Native and Expo that displays upcoming bin collection dates for a property in North Northamptonshire.
 
-## Get started
+The app retrieves live collection information from the North Northamptonshire Council collection service and presents it in a clean mobile-friendly interface.
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+- Live bin collection data
+- Next collection hero card
+- Recycling and refuse identification
+- Days remaining countdown
+- Dark mode interface
+- Android support via Expo
 
-2. Start the app
+## Screenshots
 
-   ```bash
-   npx expo start
-   ```
+_To be added_
 
-In the output, you'll find options to open the app in a
+## Technology Stack
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- React Native
+- Expo
+- TypeScript
+- North Northamptonshire Council API
 
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Project Structure
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+app/
+├── index.tsx        Main application screen
+assets/
+README.md
+app.json
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+## Running Locally
 
-### Other setup steps
+Install dependencies:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+npm install
+```
 
-## Learn more
+Start the development server:
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npx expo start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Open using:
 
-## Join the community
+- Expo Go (Android)
+- Android Emulator
+- Web Browser
 
-Join our community of developers creating universal apps.
+## Building APK
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+eas build --platform android
+```
+
+## Current Status
+
+### Version 1.0
+
+- ✅ Council API integration
+- ✅ Hero card showing next collection
+- ✅ Collection countdown
+- ✅ Dark UI theme
+- ✅ Upcoming collection list
+
+## Future Features
+
+### Notifications
+
+Send a notification the evening before collection reminding the user which bin should be put out.
+
+Example:
+
+```text
+Bin Collection Tomorrow
+
+Put out your Recycling bin tonight
+```
+
+### Light and Dark Theme Support
+
+Automatically switch between light and dark mode using the device system settings.
+
+### Pull to Refresh
+
+Allow the collection schedule to be refreshed manually.
+
+### Home Screen Widget
+
+Android widget displaying the next collection without opening the app.
+
+### Multiple Properties
+
+Support multiple UPRNs and switching between addresses.
+
+### Collection History
+
+View previously completed collections.
+
+## Author
+
+Elton Peake
+
+## License
+
+Personal project.
