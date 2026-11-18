@@ -6,7 +6,11 @@ import {
   Text,
   View
 } from "react-native";
-import { requestNotificationPermissions } from "../../services/notifications";
+import {
+  clearNotifications,
+  requestNotificationPermissions,
+  scheduleBinReminder,
+} from "../services/notifications";
 
 export default function App() {
   const [collections, setCollections] = useState<any[]>([]);
@@ -50,6 +54,26 @@ export default function App() {
       const text = await response.text();
 
       const data = JSON.parse(text);
+      await clearNotifications();
+
+      for (const item of data) {
+        const match = item.start.match(/\d+/);
+
+        if (!match) continue;
+
+        const collectionDate =
+          new Date(Number(match[0]));
+
+        const binType =
+          item.title.includes("Recycling")
+            ? "Recycling"
+            : "Refuse";
+
+        await scheduleBinReminder(
+          binType,
+          collectionDate
+        );
+      }
 
       setCollections(data);
     } catch (error) {
