@@ -1,3 +1,4 @@
+import { getCollections } from "@/services/councilApi";
 import * as Notifications from "expo-notifications";
 import { useEffect, useState } from "react";
 import {
@@ -11,9 +12,11 @@ import {
   requestNotificationPermissions,
   scheduleBinReminder,
 } from "../services/notifications";
+import { Collection } from "../types/Collection";
+import { daysUntil, formatDate } from "../utils/dates";
 
 export default function App() {
-  const [collections, setCollections] = useState<any[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
   const nextCollection = collections[0];
   const upcomingCollections = collections.slice(1);
   const isNextRecycling = nextCollection?.title.includes("Recycling");
@@ -47,21 +50,8 @@ export default function App() {
 
   const loadCollections = async () => {
     try {
-      const today = new Date();
+      const data = await getCollections();
 
-      const endDate = new Date();
-      endDate.setDate(endDate.getDate() + 30);
-
-      const fromDate = today.toISOString().split("T")[0];
-      const toDate = endDate.toISOString().split("T")[0];
-
-      const response = await fetch(
-        `https://cms.northnorthants.gov.uk/bin-collection-search/calendarevents/100031038143/${fromDate}/${toDate}`
-      );
-
-      const text = await response.text();
-
-      const data = JSON.parse(text);
       await clearNotifications();
 
       for (const item of data) {
@@ -89,41 +79,6 @@ export default function App() {
     }
   };
 
-  const formatDate = (start: string) => {
-    const match = start.match(/\d+/);
-
-    if (!match) return "";
-
-    const timestamp = Number(match[0]);
-
-    return new Date(timestamp).toLocaleDateString(
-      "en-GB",
-      {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }
-    );
-  };
-
-  const daysUntil = (start: string) => {
-    const match = start.match(/\d+/);
-
-    if (!match) return 0;
-
-    const collectionDate = new Date(Number(match[0]));
-    const today = new Date();
-
-    // Reset times so we're comparing days only
-    today.setHours(0, 0, 0, 0);
-    collectionDate.setHours(0, 0, 0, 0);
-
-    const diffTime =
-      collectionDate.getTime() - today.getTime();
-
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  };
 
   return (
     <View style={styles.container}>

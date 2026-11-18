@@ -76,6 +76,10 @@ eas build --platform android
 
 ## Future Features
 
+### Home Screen Widget
+
+Android widget displaying the next collection without opening the app.
+
 ### Light and Dark Theme Support
 
 Automatically switch between light and dark mode using the device system settings.
@@ -83,10 +87,6 @@ Automatically switch between light and dark mode using the device system setting
 ### Pull to Refresh
 
 Allow the collection schedule to be refreshed manually.
-
-### Home Screen Widget
-
-Android widget displaying the next collection without opening the app.
 
 ### Multiple Properties
 
