@@ -27,11 +27,6 @@ export async function scheduleBinReminder(
     const reminderDate = new Date(collectionDate);
 
     reminderDate.setDate(reminderDate.getDate() - 1);
-
-    reminderDate.setMinutes(
-        reminderDate.getMinutes() + 1
-    );
-
     reminderDate.setHours(19, 0, 0, 0);
 
     if (reminderDate <= new Date()) {
