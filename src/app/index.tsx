@@ -1,3 +1,4 @@
+import * as Notifications from "expo-notifications";
 import { useEffect, useState } from "react";
 import {
   FlatList,
@@ -5,26 +6,82 @@ import {
   Text,
   View
 } from "react-native";
+import {
+  clearNotifications,
+  requestNotificationPermissions,
+  scheduleBinReminder,
+} from "../services/notifications";
 
 export default function App() {
   const [collections, setCollections] = useState<any[]>([]);
   const nextCollection = collections[0];
   const upcomingCollections = collections.slice(1);
   const isNextRecycling = nextCollection?.title.includes("Recycling");
+  const initialiseApp = async () => {
+    const granted =
+      await requestNotificationPermissions();
+
+    if (granted) {
+      await testNotification();
+    }
+
+    await loadCollections();
+  };
+
+  const testNotification = async () => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Bin Buddy Test",
+        body: "Notifications are working!",
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 10,
+      },
+    });
+  };
 
   useEffect(() => {
-    loadCollections();
+    initialiseApp();
   }, []);
 
   const loadCollections = async () => {
     try {
+      const today = new Date();
+
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 30);
+
+      const fromDate = today.toISOString().split("T")[0];
+      const toDate = endDate.toISOString().split("T")[0];
+
       const response = await fetch(
-        "https://cms.northnorthants.gov.uk/bin-collection-search/calendarevents/100031038143/2026-11-17/2027-01-26"
+        `https://cms.northnorthants.gov.uk/bin-collection-search/calendarevents/100031038143/${fromDate}/${toDate}`
       );
 
       const text = await response.text();
 
       const data = JSON.parse(text);
+      await clearNotifications();
+
+      for (const item of data) {
+        const match = item.start.match(/\d+/);
+
+        if (!match) continue;
+
+        const collectionDate =
+          new Date(Number(match[0]));
+
+        const binType =
+          item.title.includes("Recycling")
+            ? "Recycling"
+            : "Refuse";
+
+        await scheduleBinReminder(
+          binType,
+          collectionDate
+        );
+      }
 
       setCollections(data);
     } catch (error) {
@@ -34,11 +91,11 @@ export default function App() {
 
   const formatDate = (start: string) => {
     const match = start.match(/\d+/);
-  
+
     if (!match) return "";
-  
+
     const timestamp = Number(match[0]);
-  
+
     return new Date(timestamp).toLocaleDateString(
       "en-GB",
       {
@@ -50,23 +107,23 @@ export default function App() {
     );
   };
 
-const daysUntil = (start: string) => {
-  const match = start.match(/\d+/);
+  const daysUntil = (start: string) => {
+    const match = start.match(/\d+/);
 
-  if (!match) return 0;
+    if (!match) return 0;
 
-  const collectionDate = new Date(Number(match[0]));
-  const today = new Date();
+    const collectionDate = new Date(Number(match[0]));
+    const today = new Date();
 
-  // Reset times so we're comparing days only
-  today.setHours(0, 0, 0, 0);
-  collectionDate.setHours(0, 0, 0, 0);
+    // Reset times so we're comparing days only
+    today.setHours(0, 0, 0, 0);
+    collectionDate.setHours(0, 0, 0, 0);
 
-  const diffTime =
-    collectionDate.getTime() - today.getTime();
+    const diffTime =
+      collectionDate.getTime() - today.getTime();
 
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-};
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
 
   return (
     <View style={styles.container}>
@@ -75,12 +132,12 @@ const daysUntil = (start: string) => {
       {nextCollection && (
         <View
           style={[
-          styles.heroCard,
-          isNextRecycling
-            ? styles.recyclingHero
-            : styles.refuseHero,
+            styles.heroCard,
+            isNextRecycling
+              ? styles.recyclingHero
+              : styles.refuseHero,
           ]}
->
+        >
           <Text style={styles.sectionTitle}>
             NEXT COLLECTION
           </Text>
@@ -104,13 +161,13 @@ const daysUntil = (start: string) => {
           <Text style={styles.heroDate}>
             {formatDate(nextCollection.start)}
           </Text>
-          
+
           <Text style={styles.heroMessage}>
             {daysUntil(nextCollection.start) === 0
               ? "Put your bin out today"
               : daysUntil(nextCollection.start) === 1
-              ? "Put your bin out tonight"
-              : `${daysUntil(nextCollection.start)} days remaining`}
+                ? "Put your bin out tonight"
+                : `${daysUntil(nextCollection.start)} days remaining`}
           </Text>
         </View>
       )}
@@ -142,8 +199,8 @@ const daysUntil = (start: string) => {
                 daysUntil(item.start) === 0
                   ? "Today"
                   : daysUntil(item.start) === 1
-                  ? "Tomorrow"
-                  : `${daysUntil(item.start)} days remaining`
+                    ? "Tomorrow"
+                    : `${daysUntil(item.start)} days remaining`
               }
             </Text>
           </View>
