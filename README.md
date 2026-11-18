@@ -6,11 +6,13 @@ The app retrieves live collection information from the North Northamptonshire Co
 
 ## Features
 
-- Live bin collection data
-- Next collection hero card
+- Live bin collection data from North Northamptonshire Council
+- Highlights the next collection
 - Recycling and refuse identification
 - Days remaining countdown
-- Dark mode interface
+- Dark mode friendly interface
+- Automatic collection reminders
+- Local notification support
 - Android support via Expo
 
 ## Screenshots
@@ -62,27 +64,17 @@ eas build --platform android
 
 ## Current Status
 
-### Version 1.0
+### Version 1.1
 
 - ✅ Council API integration
 - ✅ Hero card showing next collection
 - ✅ Collection countdown
 - ✅ Dark UI theme
 - ✅ Upcoming collection list
+- ✅ Dynamic 30 day collection window
+- ✅ Collection reminder notifications
 
 ## Future Features
-
-### Notifications
-
-Send a notification the evening before collection reminding the user which bin should be put out.
-
-Example:
-
-```text
-Bin Collection Tomorrow
-
-Put out your Recycling bin tonight
-```
 
 ### Light and Dark Theme Support
 
@@ -103,6 +95,22 @@ Support multiple UPRNs and switching between addresses.
 ### Collection History
 
 View previously completed collections.
+
+## Version History
+
+### v1.1.0
+
+- Added collection reminder notifications
+- Added automatic 30-day collection lookup window
+- Improved notification handling
+
+### v1.0.0
+
+- Initial release
+- Collection dashboard
+- Hero card
+- Days remaining countdown
+- Council API integration
 
 ## Author
 
