@@ -9,8 +9,7 @@ export async function widgetTaskHandler({
 }: WidgetTaskHandlerProps): Promise<void> {
   if (
     widgetAction !== "WIDGET_ADDED" &&
-    widgetAction !== "WIDGET_UPDATE" &&
-    widgetAction !== "WIDGET_RESIZED"
+    widgetAction !== "WIDGET_UPDATE"
   ) {
     return;
   }
@@ -22,7 +21,9 @@ export async function widgetTaskHandler({
     collection = collections[0] ?? null;
   } catch (error) {
     console.error("Failed to update the home-screen widget:", error);
-    renderWidget(<NextCollectionWidget collection={null} unavailable />);
+    if (widgetAction === "WIDGET_ADDED") {
+      renderWidget(<NextCollectionWidget collection={null} unavailable />);
+    }
     return;
   }
 

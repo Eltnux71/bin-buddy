@@ -26,7 +26,7 @@ export function NextCollectionWidget({
   const statusText =
     daysToCollection === null
       ? unavailable
-        ? "Open Bin Buddy to retry"
+        ? "Update failed"
         : "Schedule is clear"
       : daysToCollection === 0
         ? "Due today"

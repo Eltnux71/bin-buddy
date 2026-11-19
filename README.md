@@ -62,6 +62,8 @@ Open using:
 
 The Android home-screen widget requires an Android build that includes the widget's native code; it is not available in Expo Go. Build and install the APK, then add **Bin Buddy** from your launcher's widget picker.
 
+The widget requests a data refresh every seven days. Android may delay this update, and the interval is not anchored to Wednesday. Adding the widget also triggers an initial refresh. Opening the app refreshes the app screen, but does not force a widget refresh.
+
 ## Building APK
 
 ```bash

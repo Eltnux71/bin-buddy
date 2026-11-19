@@ -45,7 +45,7 @@
               "minWidth": "180dp",
               "minHeight": "140dp",
               "resizeMode": "horizontal|vertical",
-              "updatePeriodMillis": 1800000
+              "updatePeriodMillis": 604800000
             }
           ]
         }
