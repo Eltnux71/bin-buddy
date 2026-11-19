@@ -2,7 +2,7 @@
   "expo": {
     "name": "bin-buddy",
     "slug": "bin-buddy",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "binbuddy",

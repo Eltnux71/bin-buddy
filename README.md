@@ -34,7 +34,13 @@ index.ts              Registers the Android widget handler
 src/
 ├── app/
 │   └── index.tsx      Main application screen
-├── widgets/           Android home-screen widget
+├── components/        Collection cards and shared UI
+├── constants/         Shared constants
+├── hooks/             Shared React hooks
+├── services/          Council API and notification services
+├── types/             Collection data types
+├── utils/             Collection and date helpers
+└── widgets/           Android home-screen widget
 assets/
 README.md
 app.json
@@ -72,7 +78,7 @@ npx eas-cli@latest build --platform android --profile preview
 
 ## Current Status
 
-### Version 1.1
+### Version 1.2.0
 
 - ✅ Council API integration
 - ✅ Hero card showing next collection
@@ -81,7 +87,7 @@ npx eas-cli@latest build --platform android --profile preview
 - ✅ Upcoming collection list
 - ✅ Dynamic 30 day collection window
 - ✅ Collection reminder notifications
-- ✅ Android home-screen widget for the next collection
+- ⚠️ Android home-screen widget implemented; data loading still needs device verification
 
 ## Future Features
 
@@ -102,6 +108,11 @@ Support multiple UPRNs and switching between addresses.
 View previously completed collections.
 
 ## Version History
+
+### v1.2.0
+
+- Added the Android home-screen widget with a weekly refresh interval
+- Refactored collection cards into reusable components
 
 ### v1.1.0
 
