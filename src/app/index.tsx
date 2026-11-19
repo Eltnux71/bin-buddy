@@ -7,13 +7,8 @@ import {
   scheduleBinReminder,
 } from "../services/notifications";
 import type { Collection } from "../types/Collection";
+import { getBinType } from "../utils/collections";
 import { daysUntil, formatDate } from "../utils/dates";
-
-type BinType = "Recycling" | "Refuse";
-
-function getBinType(title: string): BinType {
-  return title.includes("Recycling") ? "Recycling" : "Refuse";
-}
 
 function getNextCollectionMessage(days: number): string {
   if (days === 0) return "Put your bin out today";

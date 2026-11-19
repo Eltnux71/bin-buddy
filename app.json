@@ -33,6 +33,22 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
+      ],
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "NextCollection",
+              "label": "Bin Buddy",
+              "description": "See your next refuse or recycling collection",
+              "minWidth": "180dp",
+              "minHeight": "140dp",
+              "resizeMode": "horizontal|vertical",
+              "updatePeriodMillis": 1800000
+            }
+          ]
+        }
       ]
     ],
     "experiments": {

@@ -12,6 +12,7 @@ The app retrieves live collection information from the North Northamptonshire Co
 - Days remaining countdown
 - Dark mode friendly interface
 - Local reminders at 19:00 the night before each collection, identifying recycling or refuse
+- Android home-screen widget showing the next collection
 - Local notification support
 - Android support via Expo
 
@@ -29,8 +30,11 @@ _To be added_
 ## Project Structure
 
 ```text
-app/
-├── index.tsx        Main application screen
+index.ts              Registers the Android widget handler
+src/
+├── app/
+│   └── index.tsx      Main application screen
+├── widgets/           Android home-screen widget
 assets/
 README.md
 app.json
@@ -56,10 +60,12 @@ Open using:
 - Android Emulator
 - Web Browser
 
+The Android home-screen widget requires an Android build that includes the widget's native code; it is not available in Expo Go. Build and install the APK, then add **Bin Buddy** from your launcher's widget picker.
+
 ## Building APK
 
 ```bash
-eas build --platform android
+npx eas-cli@latest build --platform android --profile preview
 ```
 
 ## Current Status
@@ -73,12 +79,9 @@ eas build --platform android
 - ✅ Upcoming collection list
 - ✅ Dynamic 30 day collection window
 - ✅ Collection reminder notifications
+- ✅ Android home-screen widget for the next collection
 
 ## Future Features
-
-### Home Screen Widget
-
-Android widget displaying the next collection without opening the app.
 
 ### Light and Dark Theme Support
 
