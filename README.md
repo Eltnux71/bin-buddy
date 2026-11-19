@@ -11,7 +11,7 @@ The app retrieves live collection information from the North Northamptonshire Co
 - Recycling and refuse identification
 - Days remaining countdown
 - Dark mode friendly interface
-- Automatic collection reminders
+- Local reminders at 19:00 the night before each collection, identifying recycling or refuse
 - Local notification support
 - Android support via Expo
 

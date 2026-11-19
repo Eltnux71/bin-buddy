@@ -10,8 +10,14 @@ Notifications.setNotificationHandler({
 });
 
 export async function requestNotificationPermissions() {
-    const { status } =
-        await Notifications.requestPermissionsAsync();
+    const { status: currentStatus } =
+        await Notifications.getPermissionsAsync();
+
+    if (currentStatus === "granted") {
+        return true;
+    }
+
+    const { status } = await Notifications.requestPermissionsAsync();
 
     return status === "granted";
 }
@@ -35,8 +41,8 @@ export async function scheduleBinReminder(
 
     await Notifications.scheduleNotificationAsync({
         content: {
-            title: "Bin Collection Tomorrow",
-            body: `Put out your ${binType} bin tonight`,
+            title: `Tomorrow: ${binType} collection`,
+            body: `Put your ${binType.toLowerCase()} bin out tonight.`,
         },
         trigger: {
             type: Notifications.SchedulableTriggerInputTypes.DATE,

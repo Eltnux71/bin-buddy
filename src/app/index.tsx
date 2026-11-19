@@ -1,54 +1,43 @@
 import { getCollections } from "@/services/councilApi";
-import * as Notifications from "expo-notifications";
-import { useEffect, useState } from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import {
   clearNotifications,
   requestNotificationPermissions,
   scheduleBinReminder,
 } from "../services/notifications";
-import { Collection } from "../types/Collection";
+import type { Collection } from "../types/Collection";
 import { daysUntil, formatDate } from "../utils/dates";
+
+type BinType = "Recycling" | "Refuse";
+
+function getBinType(title: string): BinType {
+  return title.includes("Recycling") ? "Recycling" : "Refuse";
+}
+
+function getNextCollectionMessage(days: number): string {
+  if (days === 0) return "Put your bin out today";
+  if (days === 1) return "Put your bin out tonight";
+  return `${days} days remaining`;
+}
+
+function getCollectionDayLabel(days: number): string {
+  if (days === 0) return "Today";
+  if (days === 1) return "Tomorrow";
+  return `${days} days remaining`;
+}
 
 export default function App() {
   const [collections, setCollections] = useState<Collection[]>([]);
   const nextCollection = collections[0];
   const upcomingCollections = collections.slice(1);
-  const isNextRecycling = nextCollection?.title.includes("Recycling");
-  const initialiseApp = async () => {
-    const granted =
-      await requestNotificationPermissions();
-
-    if (granted) {
-      await testNotification();
-    }
-
-    await loadCollections();
-  };
-
-  const testNotification = async () => {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Bin Buddy Test",
-        body: "Notifications are working!",
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        seconds: 10,
-      },
-    });
-  };
-
-  useEffect(() => {
-    initialiseApp();
-  }, []);
-
-  const loadCollections = async () => {
+  const nextCollectionType = nextCollection
+    ? getBinType(nextCollection.title)
+    : undefined;
+  const nextCollectionDays = nextCollection
+    ? daysUntil(nextCollection.start)
+    : undefined;
+  const loadCollections = useCallback(async () => {
     try {
       const data = await getCollections();
 
@@ -56,29 +45,26 @@ export default function App() {
 
       for (const item of data) {
         const match = item.start.match(/\d+/);
-
         if (!match) continue;
 
-        const collectionDate =
-          new Date(Number(match[0]));
-
-        const binType =
-          item.title.includes("Recycling")
-            ? "Recycling"
-            : "Refuse";
-
-        await scheduleBinReminder(
-          binType,
-          collectionDate
-        );
+        const collectionDate = new Date(Number(match[0]));
+        await scheduleBinReminder(getBinType(item.title), collectionDate);
       }
 
       setCollections(data);
     } catch (error) {
       console.error(error);
     }
-  };
+  }, []);
 
+  useEffect(() => {
+    const initialiseApp = async () => {
+      await requestNotificationPermissions();
+      await loadCollections();
+    };
+
+    void initialiseApp();
+  }, [loadCollections]);
 
   return (
     <View style={styles.container}>
@@ -88,78 +74,54 @@ export default function App() {
         <View
           style={[
             styles.heroCard,
-            isNextRecycling
+            nextCollectionType === "Recycling"
               ? styles.recyclingHero
               : styles.refuseHero,
           ]}
         >
-          <Text style={styles.sectionTitle}>
-            NEXT COLLECTION
-          </Text>
+          <Text style={styles.sectionTitle}>NEXT COLLECTION</Text>
 
           <View style={styles.iconContainer}>
             <Text style={styles.heroIcon}>
-              {isNextRecycling ? "♻️" : "🗑️"}
+              {nextCollectionType === "Recycling" ? "♻️" : "🗑️"}
             </Text>
           </View>
 
-          <Text style={styles.heroType}>
-            {nextCollection.title.includes("Recycling")
-              ? "Recycling"
-              : "Refuse"}
-          </Text>
+          <Text style={styles.heroType}>{nextCollectionType}</Text>
 
-          <Text style={styles.daysRemaining}>
-            {daysUntil(nextCollection.start)} DAYS
-          </Text>
+          <Text style={styles.daysRemaining}>{nextCollectionDays} DAYS</Text>
 
           <Text style={styles.heroDate}>
             {formatDate(nextCollection.start)}
           </Text>
 
           <Text style={styles.heroMessage}>
-            {daysUntil(nextCollection.start) === 0
-              ? "Put your bin out today"
-              : daysUntil(nextCollection.start) === 1
-                ? "Put your bin out tonight"
-                : `${daysUntil(nextCollection.start)} days remaining`}
+            {getNextCollectionMessage(nextCollectionDays ?? 0)}
           </Text>
         </View>
       )}
 
       <FlatList
-        style={{ marginTop: 20 }}
+        style={styles.collectionList}
         data={upcomingCollections}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.icon}>
-              {item.title.includes("Recycling")
-                ? "♻️"
-                : "🗑️"}
-            </Text>
+        renderItem={({ item }) => {
+          const binType = getBinType(item.title);
+          const daysUntilCollection = daysUntil(item.start);
 
-            <Text style={styles.binType}>
-              {item.title.includes("Recycling")
-                ? "Recycling"
-                : "Refuse"}
-            </Text>
-
-            <Text style={styles.dateText}>
-              {formatDate(item.start)}
-            </Text>
-
-            <Text style={styles.daysText}>
-              {
-                daysUntil(item.start) === 0
-                  ? "Today"
-                  : daysUntil(item.start) === 1
-                    ? "Tomorrow"
-                    : `${daysUntil(item.start)} days remaining`
-              }
-            </Text>
-          </View>
-        )}
+          return (
+            <View style={styles.card}>
+              <Text style={styles.icon}>
+                {binType === "Recycling" ? "♻️" : "🗑️"}
+              </Text>
+              <Text style={styles.binType}>{binType}</Text>
+              <Text style={styles.dateText}>{formatDate(item.start)}</Text>
+              <Text style={styles.daysText}>
+                {getCollectionDayLabel(daysUntilCollection)}
+              </Text>
+            </View>
+          );
+        }}
       />
     </View>
   );
@@ -171,6 +133,10 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 60,
     backgroundColor: "#121212",
+  },
+
+  collectionList: {
+    marginTop: 20,
   },
 
   title: {
