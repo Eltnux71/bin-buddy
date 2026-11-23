@@ -12,6 +12,7 @@ The app retrieves live collection information from the North Northamptonshire Co
 - Days remaining countdown
 - Dark mode friendly interface
 - Local reminders at 19:00 the night before each collection, identifying recycling or refuse
+- Android home-screen widget showing the next collection
 - Local notification support
 - Android support via Expo
 
@@ -29,8 +30,17 @@ _To be added_
 ## Project Structure
 
 ```text
-app/
-├── index.tsx        Main application screen
+index.ts              Registers the Android widget handler
+src/
+├── app/
+│   └── index.tsx      Main application screen
+├── components/        Collection cards and shared UI
+├── constants/         Shared constants
+├── hooks/             Shared React hooks
+├── services/          Council API and notification services
+├── types/             Collection data types
+├── utils/             Collection and date helpers
+└── widgets/           Android home-screen widget
 assets/
 README.md
 app.json
@@ -56,15 +66,19 @@ Open using:
 - Android Emulator
 - Web Browser
 
+The Android home-screen widget requires an Android build that includes the widget's native code; it is not available in Expo Go. Build and install the APK, then add **Bin Buddy** from your launcher's widget picker.
+
+The widget requests a data refresh every seven days. Android may delay this update, and the interval is not anchored to Wednesday. Adding the widget also triggers an initial refresh. Opening the app refreshes the app screen, but does not force a widget refresh.
+
 ## Building APK
 
 ```bash
-eas build --platform android
+npx eas-cli@latest build --platform android --profile preview
 ```
 
 ## Current Status
 
-### Version 1.1
+### Version 1.2.0
 
 - ✅ Council API integration
 - ✅ Hero card showing next collection
@@ -73,12 +87,9 @@ eas build --platform android
 - ✅ Upcoming collection list
 - ✅ Dynamic 30 day collection window
 - ✅ Collection reminder notifications
+- ⚠️ Android home-screen widget implemented; data loading still needs device verification
 
 ## Future Features
-
-### Home Screen Widget
-
-Android widget displaying the next collection without opening the app.
 
 ### Light and Dark Theme Support
 
@@ -97,6 +108,11 @@ Support multiple UPRNs and switching between addresses.
 View previously completed collections.
 
 ## Version History
+
+### v1.2.0
+
+- Added the Android home-screen widget with a weekly refresh interval
+- Refactored collection cards into reusable components
 
 ### v1.1.0
 

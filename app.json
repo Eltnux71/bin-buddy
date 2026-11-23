@@ -2,7 +2,7 @@
   "expo": {
     "name": "bin-buddy",
     "slug": "bin-buddy",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "binbuddy",
@@ -32,6 +32,22 @@
           "backgroundColor": "#208AEF",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
+        }
+      ],
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "NextCollection",
+              "label": "Bin Buddy",
+              "description": "See your next refuse or recycling collection",
+              "minWidth": "180dp",
+              "minHeight": "140dp",
+              "resizeMode": "horizontal|vertical",
+              "updatePeriodMillis": 604800000
+            }
+          ]
         }
       ]
     ],
